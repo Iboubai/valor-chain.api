@@ -1,0 +1,15 @@
+/.vs/valor-chain.api/CopilotIndices/
+/valor-chain.api/bin/
+/valor-chain.api/obj/
+/valor-chain.api.Domain/bin/
+/valor-chain.api.Domain/obj/
+/valor-chain.api.Application/bin/
+/valor-chain.api.Application/obj/
+/valor-chain.api.Infrastructure/bin/
+/valor-chain.api.Infrastructure/obj/
+/valor-chain.api.Tests.Unit/bin/
+/valor-chain.api.Tests.Unit/obj/
+/valor-chain.api.Tests.Integration/bin/
+/valor-chain.api.Tests.Integration/obj/
+/.vs/valor-chain.api/FileContentIndex/
+/.vs/
