@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -22,16 +22,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\valor-chain.api.Application\valor-chain.api.Application.csproj" />
+    <ProjectReference Include="..\valor-chain.api.Infrastructure\valor-chain.api.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="GnDapper">
       <HintPath>..\..\gn-core-libraries\GnDapper\bin\Debug\net8.0\GnDapper.dll</HintPath>
     </Reference>
     <Reference Include="GnSeriLog">
       <HintPath>..\..\gn-core-libraries\GnSeriLog\bin\Debug\net8.0\GnSeriLog.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

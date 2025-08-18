@@ -6,6 +6,12 @@ using GnSeriLog.Extensions;
 using Microsoft.Data.SqlClient;
 using Serilog;
 using System.Data;
+using valor_chain.api.Application.Handlers;
+using valor_chain.api.Domain.Impl;
+using valor_chain.api.Domain.Ports.Input;
+using valor_chain.api.Domain.Ports.Output;
+using valor_chain.api.Infrastructure.DataAccess;
+using valor_chain.api.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +37,23 @@ builder.Services.AddCustomLogging(builder.Configuration);
 builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionString));
 
-//builder.Services.AddScoped<IGeolocRepository, GeolocRepository>();
-//builder.Services.AddScoped<IGeolocService, GeolocService>();
+// Register domain repositories and services
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>(); //Implementation to be created
+builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>(); // Implementation to be created
+builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>(); // Implementation to be created
+// Register external service clients
+builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorServiceAdapter>();
+// Add other clients for notification microservices, etc.
+
+// Register command and query handlers
+builder.Services.AddScoped<CreateUserCommandHandler>();
+builder.Services.AddScoped<GetUserByIdQueryHandler>();
+builder.Services.AddScoped<CreateCompanyCommandHandler>();
+builder.Services.AddScoped<CreateProjectCommandHandler>();
+// Add other handlers
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
