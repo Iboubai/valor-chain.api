@@ -3,7 +3,7 @@ using valor_chain.api.Domain.Ports.Output;
 
 namespace valor_chain.api.Infrastructure.Services
 {
-    public class BusinessPlanGeneratorServiceAdapterr : IBusinessPlanGeneratorService
+    public class BusinessPlanGeneratorServiceAdapter : IBusinessPlanGeneratorService
     {
         public async Task<string> GenerateBusinessPlanPdfAsync(Project project)
         {
