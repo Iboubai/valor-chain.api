@@ -6,22 +6,21 @@ namespace valor_chain.api.Application.Handlers
 {
     public class CreateUserCommandHandler
     {
-        private readonly IUserManagementService _userManagementService;
-        public CreateUserCommandHandler(IUserManagementService userManagementService)
+        private readonly IUserBusinessManagementService _userBusinessManagementService;
+        public CreateUserCommandHandler(IUserBusinessManagementService userBusinessManagementService)
         {
-            _userManagementService = userManagementService;
+            _userBusinessManagementService = userBusinessManagementService;
         }
         public async Task<User> Handle(CreateUserCommand command,
             CancellationToken cancellationToken)
         {
             // Here, you should hash the password before passing it to the domain service
             // For the example, we pass the password in plain text (not recommended for production)
-            return await _userManagementService.CreateUserAsync(
+            return await _userBusinessManagementService.CreateUserBusinessAsync(
                 command.FirstName,
                 command.LastName,
                 command.Email,
-                command.Password, // HASH THIS!
-                command.UserType
+                command.Password // HASH THIS!
             );
         }
     }

@@ -1,47 +1,35 @@
-﻿using System;
-using System.Diagnostics;
-using System.Numerics;
+﻿using GnDapper.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace valor_chain.api.Domain.Entities;
 
-public class Site
+[Table("Sites")]
+public class Site : BaseEntity
 {
     public Guid Id { get; private set; }
 
     public Guid CompanyId { get; private set; }
 
     public string Name { get; private set; }
-
-    public string Address { get; private set; }
-
-    public string SiteType { get; private set; } // Farm, Processing Plant, Warehouse, Port
-
+    
     public Site(Guid companyId, string name, string address, string
         siteType)
     {
         Id = Guid.NewGuid();
         CompanyId = companyId;
         Name = name ?? throw new ArgumentNullException(nameof(name));
-        Address = address ?? throw new
-            ArgumentNullException(nameof(address));
-        SiteType = siteType ?? throw new
-            ArgumentNullException(nameof(siteType));
     }
 
     // Constructor for reconstitution from persistence
-    public Site(Guid id, Guid companyId, string name, string address, string siteType)
+    public Site(Guid id, Guid companyId, string name, string address)
     {
         Id = id;
         CompanyId = companyId;
         Name = name;
-        Address = address;
-        SiteType = siteType;
     }
 
-    public void UpdateDetails(string name, string address, string siteType)
+    public void UpdateDetails(string name, string address)
     {
         Name = name ?? Name;
-        Address = address ?? Address;
-        SiteType = siteType ?? SiteType;
     }
 }

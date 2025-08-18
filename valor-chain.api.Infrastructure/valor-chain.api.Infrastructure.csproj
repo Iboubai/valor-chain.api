@@ -11,4 +11,10 @@
     <ProjectReference Include="..\valor-chain.api.Domain\valor-chain.api.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="GnDapper">
+      <HintPath>..\..\gn-core-libraries\GnDapper\bin\Debug\net8.0\GnDapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

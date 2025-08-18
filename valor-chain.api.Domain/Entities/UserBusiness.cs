@@ -1,14 +1,15 @@
-﻿namespace valor_chain.api.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace valor_chain.api.Domain.Entities;
 
 public class UserBusiness : User
 {
-
     public List<UserProfil> UserProfil { get; private set; }
         
     public List<Company> Companies { get; private set; }
-
+    
     public UserBusiness(string firstName, string lastName, string email, string
-        passwordHash, string userType) : base(firstName, lastName, email, passwordHash, userType)
+        passwordHash) : base(firstName, lastName, email, passwordHash)
     {
         UserProfil = new List<UserProfil>();
         Companies = new List<Company>();

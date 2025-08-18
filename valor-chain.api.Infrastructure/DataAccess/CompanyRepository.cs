@@ -1,32 +1,47 @@
-﻿using valor_chain.api.Domain.Entities;
+﻿using GnDapper.Interfaces;
+using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output;
 
 namespace valor_chain.api.Infrastructure.DataAccess;
 
 public class CompanyRepository : ICompanyRepository
 {
-    public Task<Company> GetByIdAsync(Guid id)
+    private readonly IRepository<Company> _CompanyRepository;
+
+    public CompanyRepository(IUnitOfWork unitOfWork)
     {
-        throw new NotImplementedException();
+        _CompanyRepository = unitOfWork.Repository<Company>();
     }
 
-    public Task<IEnumerable<Company>> GetByUserIdAsync(Guid userId)
+    public async Task<Company> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _CompanyRepository.GetByIdAsync(id);
     }
 
-    public Task AddAsync(Company company)
+    public async Task<IEnumerable<Company>> GetByUserIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        //return await _CompanyRepository.GetByIdAsync(id);
+        //TODO
+        return new List<Company>();
     }
 
-    public Task UpdateAsync(Company company)
+    public async Task AddAsync(Company Company)
     {
-        throw new NotImplementedException();
+        await _CompanyRepository.AddAsync(Company);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task UpdateAsync(Company Company)
     {
-        throw new NotImplementedException();
+        await _CompanyRepository.UpdateAsync(Company);
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        await _CompanyRepository.DeleteAsync(id);
+    }
+
+    public async Task<IEnumerable<Company>> GetAllAsync()
+    {
+        return await _CompanyRepository.GetAllAsync();
     }
 }

@@ -1,6 +1,10 @@
-﻿namespace valor_chain.api.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using GnDapper.Models;
+
+namespace valor_chain.api.Domain.Entities
 {
-    public class User
+    [Table("Users")]
+    public class User : BaseEntity
     {
         public Guid Id { get; private set; }
 
@@ -17,7 +21,7 @@
         public DateTime? LastModifiedDate { get; private set; } 
 
         public User(string firstName, string lastName, string email, string
-        passwordHash, string userType)
+        passwordHash)
         {
             Id = Guid.NewGuid();
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));

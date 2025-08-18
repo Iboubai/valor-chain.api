@@ -25,7 +25,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.WithMachineName() // Ajoute le nom de la machine
     .Enrich.WithProcessId() // Ajoute l'ID du processus
     .Enrich.WithThreadId() // Ajoute l'ID du thread
-                           //.Enrich.WithCorrelationId() // Ajoute l'ID de corrélation pour le traçage distribué
+    //.Enrich.WithCorrelationId() // Ajoute l'ID de corrélation pour le traçage distribué
     .WriteTo.Console()); // Exemple de sink par défaut, sera surchargé par appsettings.json
 
 
@@ -41,7 +41,7 @@ builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionS
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUserManagementService, UserManagementService>(); //Implementation to be created
+builder.Services.AddScoped<IUserBusinessManagementService, UserBusinessBusinessManagementService>(); //Implementation to be created
 builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>(); // Implementation to be created
 builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>(); // Implementation to be created
 // Register external service clients
@@ -50,7 +50,7 @@ builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorS
 
 // Register command and query handlers
 builder.Services.AddScoped<CreateUserCommandHandler>();
-builder.Services.AddScoped<GetUserByIdQueryHandler>();
+builder.Services.AddScoped<GetUserBusinessByIdQueryHandler>();
 builder.Services.AddScoped<CreateCompanyCommandHandler>();
 builder.Services.AddScoped<CreateProjectCommandHandler>();
 // Add other handlers

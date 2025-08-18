@@ -1,14 +1,13 @@
 ﻿using valor_chain.api.Domain.Entities;
 
-namespace valor_chain.api.Domain.Ports.Output
+namespace valor_chain.api.Domain.Ports.Output;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<User> GetByIdAsync(Guid id);
-        Task<User> GetByEmailAsync(string email);
-        Task AddAsync(User user);
-        Task UpdateAsync(User user);
-        Task DeleteAsync(Guid id);
-        Task<IEnumerable<User>> GetAllAsync();
-    }
+    Task<User> GetByIdAsync(Guid id);
+    Task<User> GetByEmailAsync(string email);
+    Task AddAsync(User User);
+    Task UpdateAsync(User User);
+    Task DeleteAsync(Guid id);
+    Task<IEnumerable<User>> GetAllAsync();
 }
