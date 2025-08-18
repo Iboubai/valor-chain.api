@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\valor-chain.api.Domain\valor-chain.api.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
