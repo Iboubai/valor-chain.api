@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace valor_chain.api.Domain.Entities;
+﻿namespace valor_chain.api.Domain.Entities;
 
 public class UserBusiness : User
 {

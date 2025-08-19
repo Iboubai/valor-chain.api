@@ -45,7 +45,7 @@ namespace valor_chain.api.Domain.Impl
 
 
             var newUserBusiness = new UserBusiness(firstName, lastName, email, password);
-            //await _userBusinessRepository.AddAsync(newUserBusiness);
+            await _userRepository.AddAsync(newUserBusiness);
             _logger.LogInformation("Successfully added new userBusiness with ID: {UserBusinessId}", newUserBusiness.Id);
             return newUserBusiness;
         }

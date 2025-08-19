@@ -2,6 +2,7 @@
 using valor_chain.api.Application.Commands;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Application.Queries;
+using valor_chain.api.Domain.Entities;
 
 namespace valor_chain.api.Controllers
 {
@@ -9,15 +10,15 @@ namespace valor_chain.api.Controllers
     [Route("api/[controller]")]
     public class UsersBusinessController : ControllerBase
     {
-        private readonly CreateUserCommandHandler _createUserBusinessHandler;
+        private readonly CreateUserCommandHandler _createUserHandler;
         private readonly GetUserBusinessByIdQueryHandler _getUserBusinessBusinessByIdHandler;
         private readonly ILogger<UsersBusinessController> _logger;
         public UsersBusinessController(
-            CreateUserCommandHandler createUserBusinessHandler,
+            CreateUserCommandHandler createUserHandler,
             GetUserBusinessByIdQueryHandler getUserBusinessBusinessByIdHandler,
             ILogger<UsersBusinessController> logger)
         {
-            _createUserBusinessHandler = createUserBusinessHandler;
+            _createUserHandler = createUserHandler;
             _getUserBusinessBusinessByIdHandler = getUserBusinessBusinessByIdHandler;
             _logger = logger;
         }
@@ -26,13 +27,12 @@ namespace valor_chain.api.Controllers
         {
             try
             {
-                /*_logger.LogInformation("Received userBusiness creation request for {Email}", command.Email);
-                var userBusiness = await _createUserBusinessHandler.Handle(command,
-                    CancellationToken.None);
-                return CreatedAtAction(nameof(GetUserBusinessById), new
-                {
-                    id = user.Id
-                }, user);*/
+                _logger.LogInformation("Received UserBusiness creation request for {Email}", command.Email);
+                User userBusiness = await _createUserHandler.Handle(command, CancellationToken.None);
+                return CreatedAtAction(
+                    nameof(GetUserBusinessById), 
+                    new { id = userBusiness.Id }, 
+                    (UserBusiness)userBusiness);
                 return null;
             }
             catch (Exception ex)

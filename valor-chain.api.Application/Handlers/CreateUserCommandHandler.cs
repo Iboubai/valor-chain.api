@@ -1,4 +1,5 @@
 ﻿using valor_chain.api.Application.Commands;
+using valor_chain.api.Application.Security;
 using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Input;
 
@@ -20,7 +21,7 @@ namespace valor_chain.api.Application.Handlers
                 command.FirstName,
                 command.LastName,
                 command.Email,
-                command.Password // HASH THIS!
+                HashHelper.ComputeSha256Hash(command.Password) // HASH THIS!
             );
         }
     }
