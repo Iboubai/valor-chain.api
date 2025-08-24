@@ -1,11 +1,11 @@
-﻿using System.Data;
-using GnDapper.Configuration;
+﻿using GnDapper.Configuration;
 using GnDapper.Extensions;
 using GnDapper.Interfaces;
 using GnSeriLog.Extensions;
 using Microsoft.Data.SqlClient;
 using Serilog;
 using System.Data;
+using System.Text.Json.Serialization;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Domain.Impl;
 using valor_chain.api.Domain.Ports.Input;
@@ -39,9 +39,10 @@ builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionS
 
 // Register domain repositories and services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProfilRepository, ProfilRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUserBusinessManagementService, UserBusinessBusinessManagementService>(); //Implementation to be created
+builder.Services.AddScoped<IUserManagementService, UserManagementService>(); //Implementation to be created
 builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>(); // Implementation to be created
 builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>(); // Implementation to be created
 // Register external service clients
@@ -49,8 +50,8 @@ builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorS
 // Add other clients for notification microservices, etc.
 
 // Register command and query handlers
-builder.Services.AddScoped<CreateUserCommandHandler>();
-builder.Services.AddScoped<GetUserBusinessByIdQueryHandler>();
+builder.Services.AddScoped<UserCommandHandler>();
+builder.Services.AddScoped<GetCompanyByIdQueryHandler>();
 builder.Services.AddScoped<CreateCompanyCommandHandler>();
 builder.Services.AddScoped<CreateProjectCommandHandler>();
 // Add other handlers
@@ -59,6 +60,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 
 var app = builder.Build();
 

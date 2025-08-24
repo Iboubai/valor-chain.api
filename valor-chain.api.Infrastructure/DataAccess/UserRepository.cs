@@ -1,21 +1,27 @@
 ﻿using GnDapper.Interfaces;
 using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output;
+using valor_chain.api.Domain.Ports.Output.Mapper;
+using valor_chain.api.Infrastructure.DataAccess.Dtos;
+using valor_chain.api.Infrastructure.DataAccess.Mappers;
 
 namespace valor_chain.api.Infrastructure.DataAccess;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IRepository<User> _userRepository;
+    private readonly IRepository<UserDto> _userRepository;
+    private readonly IMapper<User, UserDto> _userMapper;
 
     public UserRepository(IUnitOfWork unitOfWork)
     {
-        _userRepository = unitOfWork.Repository<User>();
+        _userRepository = unitOfWork.Repository<UserDto>();
+        _userMapper = new UserMapper();
     }
 
     public async Task<User> GetByIdAsync(Guid id)
     {
-        return await _userRepository.GetByIdAsync(id);
+        var userDto = await _userRepository.GetByIdAsync(id);
+        return userDto == null ? null : _userMapper.ToEntity((UserDto)userDto);
     }
 
     public Task<User> GetByEmailAsync(string email)
@@ -23,14 +29,19 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public async Task AddAsync(User User)
+    public async Task AddAsync(User user)
     {
-        await _userRepository.AddAsync(User);
+        var d = await _userRepository.AddAsync(_userMapper.ToDto(user));
     }
 
-    public async Task UpdateAsync(User User)
+    public async Task<bool> IsUserExist(Guid userId)
     {
-        await _userRepository.UpdateAsync(User);
+        return await _userRepository.ExistsAsync(userId);
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        await _userRepository.UpdateAsync(_userMapper.ToDto(user));
     }
 
     public async Task DeleteAsync(Guid id)
@@ -40,6 +51,7 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _userRepository.GetAllAsync();
+        var users = await _userRepository.GetAllAsync();
+        return users.Select(u => _userMapper.ToEntity(u));
     }
 }
