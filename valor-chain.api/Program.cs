@@ -5,15 +5,64 @@ using GnSeriLog.Extensions;
 using Microsoft.Data.SqlClient;
 using Serilog;
 using System.Data;
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using valor_chain.api;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Domain.Impl;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Infrastructure.DataAccess;
 using valor_chain.api.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // L'URL de votre client Nuxt en développement
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+// 2. Configurer les paramètres de validation du token JWT
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            // Valider la clé de signature (basée sur votre clé secrète)
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured"))),
+
+            // Valider l'émetteur (issuer) du token
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+            // Valider le destinataire (audience) du token
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            // Valider la durée de vie du token
+            ValidateLifetime = true,
+
+            // Permet une petite marge de manœuvre pour la synchronisation des horloges
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 
 // --- 1. Configuration de Serilog (pour GnLogging) ---
@@ -38,6 +87,7 @@ builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionString));
 
 // Register domain repositories and services
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProfilRepository, ProfilRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
@@ -80,6 +130,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(myAllowSpecificOrigins);
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
