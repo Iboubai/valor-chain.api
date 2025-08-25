@@ -89,21 +89,29 @@ namespace valor_chain.api.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-
-
+        
         [HttpPost("users/login")]
-        public async Task<IActionResult> Login([FromBody] LoginCommand command)
+        public async Task<IActionResult> AuthenticateUser([FromBody] LoginCommand command)
         {
             try
             {
-                _logger.LogInformation("Received User login request for {Email}", command.Email);
+                _logger.LogInformation("Authenticate User login request for {Email}", command.Email);
 
                 // 1. Valider l'utilisateur
-                //                var user = await _authService.ValidateUser(command.Email, command.Password);
-                var query = new GetUserByIdQuery { UserId = new Guid("D59B54DA-6D22-46C2-833F-D1B04F642BE2") };
-                var user = await _userCommandHandler.GetUserByIdHandle(query, CancellationToken.None);
+                var query = new GetLoginQuery { Email = command.Email, Password = command.Password};
+                var user = await _userCommandHandler.AuthenticateUserHandle(query, CancellationToken.None);
 
-                if (user == null)
+                if (user.Category == ApiResponseType.NotFound)
+                {
+                    return NotFound(new { Message = user.Message });
+                }
+
+                if (user.Category == ApiResponseType.Unauthorized)
+                {
+                    return Unauthorized(new { Message = user.Message });
+                }
+
+                if (user.Data == null)
                 {
                     // Retourne une erreur 401 (Non autorisé) si les identifiants sont incorrects
                     return Unauthorized(new { Message = "Invalid credentials" });
@@ -122,7 +130,25 @@ namespace valor_chain.api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during User login.");
+                _logger.LogError(ex, "Error during Authenticate User.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        //[Authorize] // Protège cette route, accessible uniquement avec un token valide
+        [HttpPost("users/changepassword")]
+        public async Task<IActionResult> ChangeUserPassword([FromBody] ChangePasswordCommand command)
+        {
+            try
+            {
+                _logger.LogInformation("Change User password request for {Email}", command.Email);
+                var query = new ChangePasswordQuery { Id = command.Id, Email = command.Email, Password = command.Password};
+                var user = await _userCommandHandler.ChangeUserPasswordHandle(query, CancellationToken.None);
+                return WrappeResponse(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during Change User password.");
                 return StatusCode(500, "Internal server error");
             }
         }

@@ -24,9 +24,19 @@ public class UserRepository : IUserRepository
         return userDto == null ? null : _userMapper.ToEntity((UserDto)userDto);
     }
 
-    public Task<User> GetByEmailAsync(string email)
+    public async Task<User> AuthenticateUserAsync(string email, string password)
     {
-        throw new NotImplementedException();
+        var userDto = await _userRepository.GetWithQuery($"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}' AND PasswordHash = '{password}'");
+        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
+    }
+
+    public async Task<User> GetByEmailAsync(string email)
+    {
+
+        var query =
+            $"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}'";
+        var userDto = await _userRepository.GetWithQuery(query);
+        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
     }
 
     public async Task AddAsync(User user)
@@ -42,6 +52,14 @@ public class UserRepository : IUserRepository
     public async Task UpdateAsync(User user)
     {
         await _userRepository.UpdateAsync(_userMapper.ToDto(user));
+    }
+
+    public async Task<User> ChangeUserPasswordAsync(Guid id, string email, string password)
+    {
+        var query =
+            $"UPDATE {_userRepository.GetTableName()} SET PasswordHash = '{password}' WHERE Id = '{id}' AND Email = '{email}' ; SELECT * from  {_userRepository.GetTableName()} WHERE Id = '{id}' AND Email = '{email}'";
+        var userDto = await _userRepository.GetWithQuery(query);
+        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
     }
 
     public async Task DeleteAsync(Guid id)

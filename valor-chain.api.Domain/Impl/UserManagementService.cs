@@ -38,7 +38,7 @@ namespace valor_chain.api.Domain.Impl
             
             if (string.IsNullOrWhiteSpace(firstName))
             {
-                response.Category = ApiResponseType.BadRequest;
+                response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty firstName.";
                 response.Errors.Add(message);
                 _logger.LogWarning(message);
@@ -46,7 +46,7 @@ namespace valor_chain.api.Domain.Impl
 
             if (string.IsNullOrWhiteSpace(lastName))
             {
-                response.Category = ApiResponseType.BadRequest;
+                response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty lastName.";
                 response.Errors.Add(message);
                 _logger.LogWarning(message);
@@ -54,7 +54,7 @@ namespace valor_chain.api.Domain.Impl
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                response.Category = ApiResponseType.BadRequest;
+                response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty email.";
                 response.Errors.Add(message);
                 _logger.LogWarning(message);
@@ -62,13 +62,13 @@ namespace valor_chain.api.Domain.Impl
             
             if (!IsValidEmail(email))
             {
-                response.Category = ApiResponseType.BadRequest;
+                response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with invalid email.";
                 response.Errors.Add(message);
                 _logger.LogWarning(message);
             }
 
-            if (response.Category == ApiResponseType.BadRequest)
+            if (response.Category == ApiResponseType.InvalidParameters)
                 return response;
 
             var newUser = new User(firstName, lastName, email, password, phoneNumber);
@@ -120,9 +120,66 @@ namespace valor_chain.api.Domain.Impl
             return response;
         }
 
-        public async Task<User> AuthenticateUserAsync(string email, string password)
+        public async Task<ApiResponse<User>> AuthenticateUserAsync(string email, string password)
         {
-            throw new NotImplementedException();
+
+            var response = new ApiResponse<User>
+            {
+                Message = $"Attempting to Authenticate User with Email: {email}"
+            };
+            string message;
+            _logger.LogInformation(response.Message);
+
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to Authenticate User with empty email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (!IsValidEmail(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to Authenticate User with invalid email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (response.Category == ApiResponseType.InvalidParameters)
+                return response;
+
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                response.Category = ApiResponseType.NotFound;
+                message = $"User not exist with Email {email}.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+                return response;
+            }
+
+
+            user = await _userRepository.AuthenticateUserAsync(email, password);
+
+            if (user == null)
+            {
+                response.Category = ApiResponseType.Unauthorized;
+                message = $"Password is wrong for User with Email {email}.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+                return response;
+            }
+
+            LoadProfils(user);
+
+            _logger.LogInformation("Successfully Authenticate User with Email: {Email}", email);
+            response.Category = ApiResponseType.Success;
+            response.Message = string.Empty;
+            response.Data = user;
+            return response;
         }
 
         public async Task UpdateUserAsync(Guid id, string firstName, string lastName, string email, string phoneNumber)
@@ -130,9 +187,62 @@ namespace valor_chain.api.Domain.Impl
             throw new NotImplementedException();
         }
 
-        public async Task ChangeUserPasswordAsync(Guid id, string newPassword)
+        public async Task<ApiResponse<User>> ChangeUserPasswordAsync(Guid id, string email, string newPassword)
         {
-            throw new NotImplementedException();
+
+            var response = new ApiResponse<User>
+            {
+                Message = $"Attempting to change password for User with Email: {email}"
+            };
+            string message;
+            _logger.LogInformation(response.Message);
+
+            if (id == Guid.Empty)
+            {
+                response.Category = ApiResponseType.BadRequest;
+                message = "User ID cannot be empty.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+                return response;
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to change password for User with empty email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (!IsValidEmail(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to change password for User with invalid email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to change password for User with empty newPassword.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (response.Category == ApiResponseType.InvalidParameters)
+                return response;
+
+
+            var user = await _userRepository.ChangeUserPasswordAsync(id, email, newPassword);
+
+            LoadProfils(user);
+
+            _logger.LogInformation("Successfully change password for User with Email: {email}");
+            response.Category = ApiResponseType.Success;
+            response.Message = string.Empty;
+            response.Data = user;
+            return response;
         }
 
         public async Task DeleteUserAsync(Guid id)

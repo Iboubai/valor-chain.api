@@ -15,13 +15,8 @@ public abstract class ValorChainControllerBase : ControllerBase
             return NotFound(response);
         if (response.Category == ApiResponseType.BadRequest)
             return BadRequest(response);
-        if (response.Category == ApiResponseType.UnprocessableEntity)
-            return UnprocessableEntity(response);
-        if (response.Category == ApiResponseType.Conflict)
-            return Conflict(response);
         if (response.Category == ApiResponseType.InvalidParameters)
             return Conflict(response);
-
         return NoContent();
     }
 }

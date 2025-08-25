@@ -25,9 +25,7 @@
         BadRequest,
         NotFound,
         Unauthorized,
-        Conflict,
-        InvalidParameters,
-        UnprocessableEntity
+        InvalidParameters
     }
 
 }
