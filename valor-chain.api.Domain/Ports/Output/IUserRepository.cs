@@ -13,4 +13,5 @@ public interface IUserRepository
     Task<User> ChangeUserPasswordAsync(Guid id, string email, string password);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<User>> GetAllAsync();
+    Task<User> GetByPhoneNumberAsync(string phoneNumbre);
 }

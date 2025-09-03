@@ -20,8 +20,14 @@ namespace valor_chain.api.Infrastructure.DataAccess.Dtos
         public DateTime CreatedDate { get; private set; }
 
         public DateTime? LastModifiedDate { get; private set; }
+        public DateTime BirthDate { get; internal set; }
 
-        public UserDto(Guid id, string firstName, string lastName, string email, string passwordHash, string phoneNumber, DateTime createdDate, DateTime? lastModifiedDate)
+        public UserDto()
+        {
+            
+        }
+
+        public UserDto(Guid id, string firstName, string lastName, string email, string passwordHash, string phoneNumber, DateTime birthDate, DateTime createdDate, DateTime? lastModifiedDate)
         {
             Id = id;
             FirstName = firstName;
@@ -29,6 +35,7 @@ namespace valor_chain.api.Infrastructure.DataAccess.Dtos
             Email = email;
             PasswordHash = passwordHash;
             PhoneNumber = phoneNumber;
+            BirthDate = birthDate;
             CreatedDate = createdDate;
             LastModifiedDate = lastModifiedDate;
         }

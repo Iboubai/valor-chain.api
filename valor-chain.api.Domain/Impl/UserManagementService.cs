@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Net.Mail;
 using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
+using valor_chain.api.Domain.Static;
 
 namespace valor_chain.api.Domain.Impl
 {
@@ -26,17 +26,23 @@ namespace valor_chain.api.Domain.Impl
             _profilRepository = profilRepository ?? throw new ArgumentNullException(nameof(_profilRepository));
         }
 
-        public async Task<ApiResponse<User>> CreateUserAsync(string firstName, string lastName, string email, string password, string phoneNumber)
+        public async Task<ApiResponse<User>> CreateUserAsync(User user)
         {
+            /*command.FirstName,
+                command.LastName,
+                command.Email,
+                HashHelper.ComputeSha256Hash(command.Password), // HASH THIS!
+                GetPhoneNumberInternationalFormat(command.PhoneNumber)*/
+
 
             var response = new ApiResponse<User>
             {
-                Message = $"Attempting to add new User: {firstName}, {lastName}, {email}"
+                Message = $"Attempting to add new User: {user.FirstName}, {user.LastName}, {user.Email}"
             };
             string message;
             _logger.LogInformation(response.Message);
             
-            if (string.IsNullOrWhiteSpace(firstName))
+            if (string.IsNullOrWhiteSpace(user.FirstName))
             {
                 response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty firstName.";
@@ -44,7 +50,7 @@ namespace valor_chain.api.Domain.Impl
                 _logger.LogWarning(message);
             }
 
-            if (string.IsNullOrWhiteSpace(lastName))
+            if (string.IsNullOrWhiteSpace(user.LastName))
             {
                 response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty lastName.";
@@ -52,7 +58,7 @@ namespace valor_chain.api.Domain.Impl
                 _logger.LogWarning(message);
             }
 
-            if (string.IsNullOrWhiteSpace(email))
+            if (string.IsNullOrWhiteSpace(user.Email))
             {
                 response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with empty email.";
@@ -60,7 +66,7 @@ namespace valor_chain.api.Domain.Impl
                 _logger.LogWarning(message);
             }
             
-            if (!IsValidEmail(email))
+            if (!IsValidEmail(user.Email))
             {
                 response.Category = ApiResponseType.InvalidParameters;
                 message = "Attempted to add User with invalid email.";
@@ -71,13 +77,13 @@ namespace valor_chain.api.Domain.Impl
             if (response.Category == ApiResponseType.InvalidParameters)
                 return response;
 
-            var newUser = new User(firstName, lastName, email, password, phoneNumber);
-            await _userRepository.AddAsync(newUser);
+            //var newUser = new User(user.FirstName, user.LastName, user.Email, user.PasswordHash, user.PhoneNumber);
+            await _userRepository.AddAsync(user);
             
-            _logger.LogInformation("Successfully added new User with ID: {Id}", newUser.Id);
+            _logger.LogInformation("Successfully added new User with ID: {Id}", user.Id);
             response.Category = ApiResponseType.Success;
             response.Message = string.Empty;
-            response.Data = newUser;
+            response.Data = user;
             return response;
         }
         
@@ -122,14 +128,12 @@ namespace valor_chain.api.Domain.Impl
 
         public async Task<ApiResponse<User>> AuthenticateUserAsync(string email, string password)
         {
-
             var response = new ApiResponse<User>
             {
                 Message = $"Attempting to Authenticate User with Email: {email}"
             };
             string message;
             _logger.LogInformation(response.Message);
-
 
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -343,6 +347,92 @@ namespace valor_chain.api.Domain.Impl
             return exists;
         }
 
+        public async Task<ApiResponse<bool>> CheckEmailAsync(string email)
+        {
+            var response = new ApiResponse<bool>
+            {
+                Message = $"Attempting to CheckEmail with Email: {email}",
+                Data = true
+            };
+            string message;
+            _logger.LogInformation(response.Message);
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to CheckEmail with empty email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (!IsValidEmail(email))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to CheckEmail with invalid email.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (response.Category == ApiResponseType.InvalidParameters)
+                return response;
+
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user != null)
+            {
+                response.Category = ApiResponseType.Success;
+                message = $"User exist with Email {email}.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+                return response;
+            }
+
+            _logger.LogInformation("Successfully CheckEmail with Email: {Email}", email);
+            response.Category = ApiResponseType.Success;
+            response.Message = string.Empty;
+            response.Data = false;
+            return response;
+        }
+
+        public async Task<ApiResponse<bool>> CheckPhoneAsync(string phoneNumbre)
+        {
+            var response = new ApiResponse<bool>
+            {
+                Message = $"Attempting to CheckPhone with PhoneNumbre: {phoneNumbre}",
+                Data = true
+            };
+            string message;
+            _logger.LogInformation(response.Message);
+
+            if (!IsValidPhoneNumber(phoneNumbre))
+            {
+                response.Category = ApiResponseType.InvalidParameters;
+                message = "Attempted to CheckPhone with invalid phone number.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+            }
+
+            if (response.Category == ApiResponseType.InvalidParameters)
+                return response;
+
+            var user = await _userRepository.GetByPhoneNumberAsync(phoneNumbre);
+
+            if (user != null)
+            {
+                response.Category = ApiResponseType.Success;
+                message = $"User exist with Phone Number {phoneNumbre}.";
+                response.Errors.Add(message);
+                _logger.LogWarning(message);
+                return response;
+            }
+
+            _logger.LogInformation("Successfully CheckPhone with Email: {PhoneNumbre}", phoneNumbre);
+            response.Category = ApiResponseType.Success;
+            response.Message = string.Empty;
+            response.Data = false;
+            return response;
+        }
+
         private bool IsValidProfil(string profil)
         {
             return Enum.TryParse<UserProfil>(profil, ignoreCase: true, out _);
@@ -368,6 +458,34 @@ namespace valor_chain.api.Domain.Impl
             try
             {
                 var mailAddress = new MailAddress(email);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsValidPhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return false;
+
+            try
+            {
+                // Supposons que votre commande contient le numéro et le code du pays.
+                // Pour la Guinée, le code est "GN".
+                const string countryCode = "GN";
+
+                // 1. Valider le format du numéro de téléphone
+                if (!PhoneNumberValidator.IsValidNumber(phoneNumber, countryCode))
+                {
+                    // Si le format lui-même est invalide, on peut considérer qu'il n'existe pas
+                    // ou renvoyer une erreur spécifique au client.
+                    // Pour une simple vérification d'existence, on peut retourner `false`.
+                    _logger.LogWarning("Numéro de téléphone au format invalide reçu : {PhoneNumber}", phoneNumber);
+                    return false;
+                }
                 return true;
             }
             catch (FormatException)

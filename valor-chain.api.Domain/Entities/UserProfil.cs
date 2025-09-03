@@ -2,9 +2,10 @@
 
 public enum UserProfil
 {
-    AgroProduction,
-    AnimalProduction,
-    FisherProduction,
-    Storage,
-    Distributor
+    Production, 
+    Transformation, 
+    Distribution, 
+    Stockage, 
+    Transport, 
+    Consommation
 }

@@ -32,7 +32,6 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetByEmailAsync(string email)
     {
-
         var query =
             $"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}'";
         var userDto = await _userRepository.GetWithQuery(query);
@@ -71,5 +70,13 @@ public class UserRepository : IUserRepository
     {
         var users = await _userRepository.GetAllAsync();
         return users.Select(u => _userMapper.ToEntity(u));
+    }
+
+    public async Task<User> GetByPhoneNumberAsync(string phoneNumber)
+    {
+        var query =
+            $"SELECT * from  {_userRepository.GetTableName()} WHERE PhoneNumber = '{phoneNumber}'";
+        var userDto = await _userRepository.GetWithQuery(query);
+        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
     }
 }

@@ -18,6 +18,7 @@ namespace valor_chain.api.Infrastructure.DataAccess.Mappers
                 user.Email,
                 user.PasswordHash,
                 user.PhoneNumber,
+                user.BirthDate,
                 user.CreatedDate,
                 user.LastModifiedDate
             );
@@ -34,6 +35,7 @@ namespace valor_chain.api.Infrastructure.DataAccess.Mappers
                 dto.Email,
                 dto.PasswordHash,
                 dto.PhoneNumber,
+                dto.BirthDate,
                 dto.CreatedDate,
                 dto.LastModifiedDate
             );

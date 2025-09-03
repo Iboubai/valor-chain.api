@@ -9,6 +9,7 @@
 
         public ApiResponse()
         {
+            Category = ApiResponseType.Success;
             Errors = new List<string>();
         }
 
