@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api", "valor-chain.api\valor-chain.api.csproj", "{0F38DBF6-0A1A-400D-BDFA-57C811ABD4C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api.Domain", "valor-chain.api.Domain\valor-chain.api.Domain.csproj", "{0B7269FE-2D74-4943-B0B2-8A27B80E402A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api.Application", "valor-chain.api.Application\valor-chain.api.Application.csproj", "{5AC58B27-290B-4FA9-A65F-B3C3AA63AA03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api.Infrastructure", "valor-chain.api.Infrastructure\valor-chain.api.Infrastructure.csproj", "{5D4C3F05-34B0-4768-B03F-FE93BDD88F8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api.Tests.Unit", "valor-chain.api.Tests.Unit\valor-chain.api.Tests.Unit.csproj", "{8CA3ACB3-E300-49DA-BC80-8CF2135425F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valor-chain.api.Tests.Integration", "valor-chain.api.Tests.Integration\valor-chain.api.Tests.Integration.csproj", "{67DD7F22-9430-490C-BB86-43ABA21CD553}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F38DBF6-0A1A-400D-BDFA-57C811ABD4C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F38DBF6-0A1A-400D-BDFA-57C811ABD4C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F38DBF6-0A1A-400D-BDFA-57C811ABD4C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F38DBF6-0A1A-400D-BDFA-57C811ABD4C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7269FE-2D74-4943-B0B2-8A27B80E402A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7269FE-2D74-4943-B0B2-8A27B80E402A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7269FE-2D74-4943-B0B2-8A27B80E402A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7269FE-2D74-4943-B0B2-8A27B80E402A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC58B27-290B-4FA9-A65F-B3C3AA63AA03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC58B27-290B-4FA9-A65F-B3C3AA63AA03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC58B27-290B-4FA9-A65F-B3C3AA63AA03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC58B27-290B-4FA9-A65F-B3C3AA63AA03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D4C3F05-34B0-4768-B03F-FE93BDD88F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D4C3F05-34B0-4768-B03F-FE93BDD88F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D4C3F05-34B0-4768-B03F-FE93BDD88F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D4C3F05-34B0-4768-B03F-FE93BDD88F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA3ACB3-E300-49DA-BC80-8CF2135425F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA3ACB3-E300-49DA-BC80-8CF2135425F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA3ACB3-E300-49DA-BC80-8CF2135425F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA3ACB3-E300-49DA-BC80-8CF2135425F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67DD7F22-9430-490C-BB86-43ABA21CD553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DD7F22-9430-490C-BB86-43ABA21CD553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67DD7F22-9430-490C-BB86-43ABA21CD553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67DD7F22-9430-490C-BB86-43ABA21CD553}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1272669B-1CB1-475A-A584-B466886C8D0D}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>valor_chain.api.Infrastructure</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\valor-chain.api.Domain\valor-chain.api.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="gn-core-entities">
+      <HintPath>..\..\gn-core-entities\gn-core-entities\bin\Debug\net8.0\gn-core-entities.dll</HintPath>
+    </Reference>
+    <Reference Include="GnDapper">
+      <HintPath>..\..\gn-core-libraries\GnDapper\bin\Debug\net8.0\GnDapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
