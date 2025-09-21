@@ -4,10 +4,10 @@ namespace valor_chain.api.Domain.Ports.Output;
 
 public interface IProfilRepository
 {
-    Task<Profil> GetByIdAsync(Guid id);
-    Task AddAsync(Profil profil);
+    Task<UserProfil> GetByIdAsync(Guid id);
+    Task AddAsync(UserProfil profil);
     Task<bool> IsUserProfilExist(Guid userId, string profilName);
     Task DeleteAsync(Guid id);
-    Task<IEnumerable<Profil>> GetAllAsync();
-    Task<IEnumerable<Profil>> GetProfilsByUserIdAsync(Guid UserId);
+    Task<IEnumerable<UserProfil>> GetAllAsync();
+    Task<IEnumerable<UserProfil>> GetProfilsByUserIdAsync(Guid UserId);
 }

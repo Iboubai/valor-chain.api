@@ -11,4 +11,10 @@
     <ProjectReference Include="..\valor-chain.api.Domain\valor-chain.api.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="gn-core-entities">
+      <HintPath>..\..\gn-core-entities\gn-core-entities\bin\Debug\net8.0\gn-core-entities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -112,7 +112,7 @@ namespace valor_chain.api.Controllers
                 var userProfilList = new ApiResponse<IEnumerable<string>>()
                 {
                     Category = ApiResponseType.Success,
-                    Data = Enum.GetNames(typeof(UserProfil)).ToList()
+                    Data = Enum.GetNames(typeof(Profil)).ToList()
                 };
                 return WrappeResponse(userProfilList);
             }
