@@ -18,10 +18,12 @@ namespace valor_chain.api.Domain.Ports.Input
 
         Task<ApiResponse<IEnumerable<User>>> GetAllUsersAsync();
 
-        Task<ApiResponse<Profil>> AddUserProfilAsync(Guid userId, string profilName);
+        Task<ApiResponse<UserProfil>> AddUserProfilAsync(Guid userId, string profilName);
 
         Task<ApiResponse<bool>> CheckEmailAsync(string email);
 
         Task<ApiResponse<bool>> CheckPhoneAsync(string phoneNumber);
+
+        Task AddUserLocationAsync(UserLocation userLocation);
     }
 }

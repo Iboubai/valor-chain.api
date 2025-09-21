@@ -89,18 +89,21 @@ builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionS
 // Register domain repositories and services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProfilRepository, ProfilRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IProfilRepository, UserProfilRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUserManagementService, UserManagementService>(); //Implementation to be created
-builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>(); // Implementation to be created
-builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>(); // Implementation to be created
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<ILocationManagementService, LocationManagementService>();
+builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>();
+builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>();
 // Register external service clients
 builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorServiceAdapter>();
 // Add other clients for notification microservices, etc.
 
 // Register command and query handlers
 builder.Services.AddScoped<UserCommandHandler>();
+builder.Services.AddScoped<LocationCommandHandler>();
 builder.Services.AddScoped<GetCompanyByIdQueryHandler>();
 builder.Services.AddScoped<CreateCompanyCommandHandler>();
 builder.Services.AddScoped<CreateProjectCommandHandler>();

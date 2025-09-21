@@ -4,23 +4,27 @@ using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Domain.Static;
+using valor_chaivalor_chain.api.Domain.Entities.FrontEntities;
 
 namespace valor_chain.api.Domain.Impl
 {
     public class UserManagementService : IUserManagementService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILocationRepository _locationRepository;
         private readonly ICompanyRepository _companyRepository;
         private readonly IProfilRepository _profilRepository;
         private readonly ILogger<UserManagementService> _logger;
 
         public UserManagementService(
             IUserRepository userRepository,
+            ILocationRepository locationRepository,
             ICompanyRepository companyRepository,
             ILogger<UserManagementService> logger, 
             IProfilRepository profilRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(_userRepository));
+            _locationRepository = locationRepository ?? throw new ArgumentNullException(nameof(_locationRepository));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(_companyRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _profilRepository = profilRepository ?? throw new ArgumentNullException(nameof(_profilRepository));
@@ -28,13 +32,6 @@ namespace valor_chain.api.Domain.Impl
 
         public async Task<ApiResponse<User>> CreateUserAsync(User user)
         {
-            /*command.FirstName,
-                command.LastName,
-                command.Email,
-                HashHelper.ComputeSha256Hash(command.Password), // HASH THIS!
-                GetPhoneNumberInternationalFormat(command.PhoneNumber)*/
-
-
             var response = new ApiResponse<User>
             {
                 Message = $"Attempting to add new User: {user.FirstName}, {user.LastName}, {user.Email}"
@@ -76,8 +73,7 @@ namespace valor_chain.api.Domain.Impl
 
             if (response.Category == ApiResponseType.InvalidParameters)
                 return response;
-
-            //var newUser = new User(user.FirstName, user.LastName, user.Email, user.PasswordHash, user.PhoneNumber);
+                        
             await _userRepository.AddAsync(user);
             
             _logger.LogInformation("Successfully added new User with ID: {Id}", user.Id);
@@ -118,6 +114,7 @@ namespace valor_chain.api.Domain.Impl
             }
 
             LoadProfils(user);
+            LoadLocation(user);
 
             _logger.LogInformation("Successfully retrieved User with ID: {id}", id);
             response.Category = ApiResponseType.Success;
@@ -178,6 +175,7 @@ namespace valor_chain.api.Domain.Impl
             }
 
             LoadProfils(user);
+            LoadLocation(user);
 
             _logger.LogInformation("Successfully Authenticate User with Email: {Email}", email);
             response.Category = ApiResponseType.Success;
@@ -241,6 +239,7 @@ namespace valor_chain.api.Domain.Impl
             var user = await _userRepository.ChangeUserPasswordAsync(id, email, newPassword);
 
             LoadProfils(user);
+            LoadLocation(user);
 
             _logger.LogInformation("Successfully change password for User with Email: {email}");
             response.Category = ApiResponseType.Success;
@@ -266,7 +265,9 @@ namespace valor_chain.api.Domain.Impl
             var userList = await _userRepository.GetAllAsync();
             foreach (var user in userList)
             {
-                usersResult.Add(await LoadProfils(user));
+                LoadProfils(user);
+                LoadLocation(user);
+                usersResult.Add(user);
             }
             
             _logger.LogInformation("Successfully get all User");
@@ -276,9 +277,9 @@ namespace valor_chain.api.Domain.Impl
             return response;
         }
 
-        public async Task<ApiResponse<Profil>> AddUserProfilAsync(Guid userId, string profilName)
+        public async Task<ApiResponse<UserProfil>> AddUserProfilAsync(Guid userId, string profilName)
         {
-            var response = new ApiResponse<Profil>
+            var response = new ApiResponse<UserProfil>
             {
                 Message = $"Attempting to add new UserProfil to User: {userId}, {profilName}"
             };
@@ -321,9 +322,8 @@ namespace valor_chain.api.Domain.Impl
                 return response;
             }
 
-            var newProfil = new Profil(userId, profilName);
+            var newProfil = new UserProfil(userId, profilName);
             await _profilRepository.AddAsync(newProfil);
-
 
             _logger.LogInformation("Successfully added new UserProfil with ID: {ProfilId}, {UserId}", newProfil.Id, newProfil.UserId);
             response.Category = ApiResponseType.Success;
@@ -435,7 +435,7 @@ namespace valor_chain.api.Domain.Impl
 
         private bool IsValidProfil(string profil)
         {
-            return Enum.TryParse<UserProfil>(profil, ignoreCase: true, out _);
+            return Enum.TryParse<Profil>(profil, ignoreCase: true, out _);
         }
 
         private async Task<User> LoadProfils(User user)
@@ -444,11 +444,18 @@ namespace valor_chain.api.Domain.Impl
             if (profils.Any())
                 foreach (var profil in profils)
                 {
-                    user.AddProfil(Enum.Parse<UserProfil>(profil.ProfilName));
+                    user.AddProfil(Enum.Parse<Profil>(profil.ProfilName));
                 }
             return user;
         }
 
+        private async Task<User> LoadLocation(User user)
+        {
+            var location = await _locationRepository.GetUserLocationAsync(user.Id);
+            if (location != null)
+                user.Location = location;
+            return user;
+        }
 
         public bool IsValidEmail(string email)
         {
@@ -494,6 +501,10 @@ namespace valor_chain.api.Domain.Impl
             }
         }
 
+        public async Task AddUserLocationAsync(UserLocation userLocation)
+        {
+            await _locationRepository.AddUserLocationAsync(userLocation);
+        }
     }
 }
     

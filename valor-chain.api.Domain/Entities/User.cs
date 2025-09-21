@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using GnDapper.Models;
+﻿using gn_core_entities.Location;
+using System.Text.Json.Serialization;
 
 namespace valor_chain.api.Domain.Entities
 {
@@ -13,41 +13,48 @@ namespace valor_chain.api.Domain.Entities
 
         public string Email { get; set; }
 
+        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         public string PhoneNumber { get; set; }
 
         public DateTime BirthDate { get; set; }
 
+        public bool IsActive { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime? LastModifiedDate { get; set; }
-        
-        public List<UserProfil> Profils { get; set; }
+
+        public List<Profil> Profils { get; set; }
+
+        public UserLocation Location { get; set; }
 
         public User()
         {
             Id = Guid.NewGuid();
             CreatedDate = DateTime.UtcNow;
-            Profils = new List<UserProfil>();
+            Profils = new List<Profil>();
+            Location = new UserLocation() { UserId = Id };
         }
 
-        public User(string firstName, string lastName, string email, string
-        passwordHash, string phoneNumber, DateTime birthDate)
+        public User(string firstName, string lastName, string email, string passwordHash, string phoneNumber, DateTime birthDate, bool isActive)
         {
             Id = Guid.NewGuid();
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Email = email ?? throw new ArgumentNullException(nameof(email));
             PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
-            PhoneNumber = phoneNumber;
+            PhoneNumber = phoneNumber ?? throw new ArgumentNullException(nameof(phoneNumber));
             BirthDate = birthDate;
             BirthDate = DateTime.UtcNow;
             CreatedDate = DateTime.UtcNow;
-            Profils = new List<UserProfil>();
+            IsActive = isActive;
+            Profils = new List<Profil>();
+            Location = new UserLocation() { UserId = Id };
         }
 
-        public User(Guid id, string firstName, string lastName, string email, string passwordHash, string phoneNumber, DateTime birthDate, DateTime createdDate, DateTime? lastModifiedDate)
+        public User(Guid id, string firstName, string lastName, string email, string passwordHash, string phoneNumber, DateTime birthDate, DateTime createdDate, DateTime? lastModifiedDate, bool isActive)
         {
             Id = id;
             FirstName = firstName;
@@ -58,7 +65,9 @@ namespace valor_chain.api.Domain.Entities
             BirthDate = birthDate;
             CreatedDate = createdDate;
             LastModifiedDate = lastModifiedDate;
-            Profils = new List<UserProfil>();
+            IsActive = isActive;
+            Profils = new List<Profil>();
+            Location = new UserLocation() { UserId = Id };
         }
 
         public void UpdateUser(string firstName, string lastName, string email, string phoneNumber, DateTime birthDate)
@@ -71,14 +80,20 @@ namespace valor_chain.api.Domain.Entities
             LastModifiedDate = DateTime.UtcNow;
         }
 
+        public void UpdateLocation(Region region, Prefecture prefecture, SousPrefecture sousPrefecture)
+        {
+            Location.Region = region;
+            Location.Prefecture = prefecture;
+            Location.SousPrefecture = sousPrefecture;
+        }
+
         public void ChangePassword(string newPasswordHash)
         {
-            PasswordHash = newPasswordHash ?? throw new
-            ArgumentNullException(nameof(newPasswordHash));
+            PasswordHash = newPasswordHash ?? throw new ArgumentNullException(nameof(newPasswordHash));
             LastModifiedDate = DateTime.UtcNow;
         }
 
-        public void AddProfil(UserProfil profil)
+        public void AddProfil(Profil profil)
         {
             if (!HasRole(profil))
             {
@@ -86,7 +101,7 @@ namespace valor_chain.api.Domain.Entities
             }
         }
 
-        public void RemoveProfil(UserProfil profil)
+        public void RemoveProfil(Profil profil)
         {
             if (Profils.Contains(profil))
             {
@@ -94,7 +109,7 @@ namespace valor_chain.api.Domain.Entities
             }
         }
 
-        public bool HasRole(UserProfil profil)
+        public bool HasRole(Profil profil)
         {
             return Profils != null && Profils.Contains(profil);
         }
