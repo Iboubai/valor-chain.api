@@ -4,7 +4,6 @@ using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Domain.Static;
-using valor_chaivalor_chain.api.Domain.Entities.FrontEntities;
 
 namespace valor_chain.api.Domain.Impl
 {

@@ -12,7 +12,7 @@
         public int region { get; set; }
         public int Prefecture { get; set; }
         public int subPrefecture { get; set; }
-        string[] valueChainLink { get; set; }
+        public string[] valueChainLink { get; set; }
 
     }
 }

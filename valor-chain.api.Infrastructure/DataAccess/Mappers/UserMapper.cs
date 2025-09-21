@@ -20,7 +20,8 @@ namespace valor_chain.api.Infrastructure.DataAccess.Mappers
                 user.PhoneNumber,
                 user.BirthDate,
                 user.CreatedDate,
-                user.LastModifiedDate
+                user.LastModifiedDate,
+                user.IsActive
             );
         }
 
@@ -37,7 +38,8 @@ namespace valor_chain.api.Infrastructure.DataAccess.Mappers
                 dto.PhoneNumber,
                 dto.BirthDate,
                 dto.CreatedDate,
-                dto.LastModifiedDate
+                dto.LastModifiedDate,
+                dto.IsActive
             );
         }
     }

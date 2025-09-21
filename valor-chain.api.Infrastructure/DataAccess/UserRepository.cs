@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> AuthenticateUserAsync(string email, string password)
     {
-        var userDto = await _userRepository.GetWithQuery($"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}' AND PasswordHash = '{password}'");
+        var userDto = await _userRepository.GetWithQuery($"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}' AND PasswordHash = '{password}' AND IsActive = 1");
         return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
     }
 
