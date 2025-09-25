@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using valor_chain.api.Application.Commands;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Application.Queries;
@@ -123,7 +125,7 @@ namespace valor_chain.api.Controllers
             }
         }
 
-        //[Authorize] // Protège cette route, accessible uniquement avec un token valide
+        [Authorize] // Protège cette route, accessible uniquement avec un token valide
         [HttpPost("users/changepassword")]
         public async Task<IActionResult> ChangeUserPassword([FromBody] ChangePasswordCommand command)
         {
