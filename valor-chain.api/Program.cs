@@ -2,12 +2,13 @@
 using GnDapper.Extensions;
 using GnDapper.Interfaces;
 using GnSeriLog.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Data;
 using System.Text;
 using System.Text.Json.Serialization;
-using Microsoft.IdentityModel.Tokens;
 using valor_chain.api;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Domain.Impl;
@@ -15,7 +16,6 @@ using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Infrastructure.DataAccess;
 using valor_chain.api.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,16 +86,20 @@ builder.Services.AddCustomLogging(builder.Configuration);
 builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionString));
 
-// Register domain repositories and services
+// Register domain repositories
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IProfilRepository, UserProfilRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IParcelleRepository, ParcelleRepository>();
+
+// Register Services
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<ILocationManagementService, LocationManagementService>();
 builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>();
+builder.Services.AddScoped<IExploitationService, ExploitationService>();
 builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>();
 // Register external service clients
 builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorServiceAdapter>();
@@ -107,6 +111,7 @@ builder.Services.AddScoped<LocationCommandHandler>();
 builder.Services.AddScoped<GetCompanyByIdQueryHandler>();
 builder.Services.AddScoped<CreateCompanyCommandHandler>();
 builder.Services.AddScoped<CreateProjectCommandHandler>();
+builder.Services.AddScoped<ExploitationCommandHandler>();
 // Add other handlers
 
 builder.Services.AddControllers();
