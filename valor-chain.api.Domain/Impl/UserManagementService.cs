@@ -119,6 +119,7 @@ namespace valor_chain.api.Domain.Impl
             response.Category = ApiResponseType.Success;
             response.Message = string.Empty;
             response.Data = user;
+            response.Data = user;
             return response;
         }
 
@@ -183,9 +184,39 @@ namespace valor_chain.api.Domain.Impl
             return response;
         }
 
-        public async Task UpdateUserAsync(Guid id, string firstName, string lastName, string email, string phoneNumber)
+        public async Task<ApiResponse<User>> UpdateUserAsync(Guid userId, User userNewDatas)
         {
-            throw new NotImplementedException();
+            var userToUpdate = await _userRepository.GetByIdAsync(userId);
+
+            if (userToUpdate == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userNewDatas.FirstName))
+            {
+                userToUpdate.FirstName = userNewDatas.FirstName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userNewDatas.LastName))
+            {
+                userToUpdate.LastName = userNewDatas.LastName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userNewDatas.PhoneNumber))
+            {
+                userToUpdate.PhoneNumber = userNewDatas.PhoneNumber;
+            }
+
+            userToUpdate.LastModifiedDate = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(userToUpdate);
+
+            return new ApiResponse<User>
+            {
+                Data = userToUpdate,
+                Category = ApiResponseType.Success
+            };
         }
 
         public async Task<ApiResponse<User>> ChangeUserPasswordAsync(Guid id, string email, string newPassword)

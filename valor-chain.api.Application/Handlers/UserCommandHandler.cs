@@ -89,6 +89,18 @@ namespace valor_chain.api.Application.Handlers
             return await _userManagementService.CheckPhoneAsync(GetPhoneNumberInternationalFormat(command.PhoneNumber));
         }
 
+        public async Task<ApiResponse<User>> UpdateUserHandle(Guid userId, UpdateUserCommand command, CancellationToken none)
+        {
+            var user = new User()
+            {
+                Id = userId,
+                FirstName = command.FirstName,
+                LastName = command.LastName,
+                PhoneNumber = GetPhoneNumberInternationalFormat(command.PhoneNumber)
+            };
+            return await _userManagementService.UpdateUserAsync(userId, user);
+        }
+
         private string GetPhoneNumberInternationalFormat(string phoneNumber)
         {
             var phoneNumberInternationalFormat = string.Empty;

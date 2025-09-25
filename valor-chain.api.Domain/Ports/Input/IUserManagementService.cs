@@ -9,8 +9,8 @@ namespace valor_chain.api.Domain.Ports.Input
         Task<ApiResponse<User>> GetUserByIdAsync(Guid id);
 
         Task<ApiResponse<User>> AuthenticateUserAsync(string email, string password);
-        
-        Task UpdateUserAsync(Guid id, string firstName, string lastName, string email, string phoneNumber);
+
+        Task<ApiResponse<User>> UpdateUserAsync(Guid userId, User user);
 
         Task<ApiResponse<User>> ChangeUserPasswordAsync(Guid id, string email, string newPassword);
 

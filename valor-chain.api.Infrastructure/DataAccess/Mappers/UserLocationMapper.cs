@@ -29,10 +29,7 @@ namespace valor_chain.api.Infrastructure.DataAccess.Mappers
             return new UserLocation(
                 dto.Id,
                 dto.UserId,
-                null,//region,
-                null,//prefecture,
-                null,//sousPrefecture, 
-                dto.CreatedDate, 
+                dto.CreatedDate,
                 dto.IsActive
                 );
         }

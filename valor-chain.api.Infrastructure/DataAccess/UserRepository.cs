@@ -40,7 +40,7 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        var d = await _userRepository.AddAsync(_userMapper.ToDto(user));
+        await _userRepository.AddAsync(_userMapper.ToDto(user));
     }
 
     public async Task<bool> IsUserExist(Guid userId)

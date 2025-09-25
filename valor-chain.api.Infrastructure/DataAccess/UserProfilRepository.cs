@@ -1,6 +1,8 @@
 ﻿using GnDapper.Interfaces;
 using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output;
+using valor_chain.api.Infrastructure.DataAccess.Dtos;
+using valor_chain.api.Infrastructure.DataAccess.Mappers;
 
 namespace valor_chain.api.Infrastructure.DataAccess;
 

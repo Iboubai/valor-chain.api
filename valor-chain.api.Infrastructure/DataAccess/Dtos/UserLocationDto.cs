@@ -1,5 +1,4 @@
 ﻿using GnDapper.Models;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace valor_chain.api.Infrastructure.DataAccess.Dtos

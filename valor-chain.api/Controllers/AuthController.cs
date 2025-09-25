@@ -36,13 +36,7 @@ namespace valor_chain.api.Controllers
                 // 1. Valider l'utilisateur
                 var query = new GetLoginQuery { Email = command.Email, Password = command.Password};
                 var user = await _userCommandHandler.AuthenticateUserHandle(query, CancellationToken.None);
-                //ApiResponse<User> user = new ApiResponse<User>()
-                //{
-                //    Category = ApiResponseType.Success,
-                //    Data = new User("Ibrahima", "Doumbouya", "doumbouyaibrahima@gmail.com", "ezT48hhc8J2M5G", "629817970")
-                //};
-                    
-
+                
                 if (user.Category == ApiResponseType.NotFound)
                 {
                     return NotFound(new { Message = user.Message });
@@ -77,12 +71,12 @@ namespace valor_chain.api.Controllers
             }
         }
 
-        [Authorize] // Protège cette route, accessible uniquement avec un token valide
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
             // Récupère l'ID de l'utilisateur à partir du token (claim)
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -91,11 +85,6 @@ namespace valor_chain.api.Controllers
 
             var query = new GetUserByIdQuery { UserId = Guid.Parse(userId) };
             var user = await _userCommandHandler.GetUserByIdHandle(query, CancellationToken.None);
-            //ApiResponse<User> user = new ApiResponse<User>()
-            //{
-            //    Category = ApiResponseType.Success,
-            //    Data = new User("Ibrahima", "Doumbouya", "doumbouyaibrahima@gmail.com", "ezT48hhc8J2M5G", "629817970")
-            //};
 
             if (user == null)
             {
@@ -103,7 +92,7 @@ namespace valor_chain.api.Controllers
             }
 
             // Renvoyez les données de l'utilisateur (sans le mot de passe !)
-            return WrappeResponse(user);
+            return WrappeResponse(user);            
         }
 
 
@@ -119,6 +108,62 @@ namespace valor_chain.api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating User.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [Authorize]
+        [HttpPatch("{id}")] // Utilisation de PATCH pour les mises à jour partielles
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        {
+            // 1. Vérification de sécurité : L'utilisateur peut-il modifier ce profil ?
+            // Un utilisateur ne devrait pouvoir modifier que son propre profil.
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null || Guid.Parse(currentUserId) != id)
+            {
+                // L'utilisateur essaie de modifier un profil qui n'est pas le sien.
+                _logger.LogWarning("Security violation: User {CurrentUserId} attempted to modify profile of user {TargetUserId}.", currentUserId, id);
+                return Forbid(); // Renvoie un statut 403 Forbidden
+            }
+
+            // 2. Validation du modèle (vérifie les annotations comme [StringLength])
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Renvoie un statut 400 avec les erreurs de validation
+            }
+
+            try
+            {
+                _logger.LogInformation("Received update request for user {UserId}", id);
+
+                // 3. Appel au Command Handler pour exécuter la logique métier
+                // Il est de la responsabilité du handler de trouver l'utilisateur,
+                // d'appliquer les modifications et de sauvegarder en base de données.
+                var updatedUserResult = await _userCommandHandler.UpdateUserHandle(id, command, CancellationToken.None);
+
+                // 4. Gestion de la réponse du handler
+                if (updatedUserResult == null)
+                {
+                    // Le handler n'a pas trouvé l'utilisateur en base de données.
+                    return NotFound(new { message = "User not found" }); // Renvoie un statut 404
+                }
+
+                // Si tout s'est bien passé, le handler a déjà sauvegardé les modifications.
+                // On peut renvoyer une réponse 200 OK avec l'utilisateur mis à jour,
+                // ou simplement une réponse 204 No Content pour indiquer le succès.
+
+                // Option A : Renvoyer l'objet mis à jour (pratique pour le frontend)
+                //return WrappeResponse(updatedUserResult); // Renvoie 200 OK
+                return WrappeResponse(updatedUserResult);
+
+                // Option B : Renvoyer "No Content" (plus léger)
+                // return NoContent(); // Renvoie 204 No Content
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user {UserId}.", id);
                 return StatusCode(500, "Internal server error");
             }
         }

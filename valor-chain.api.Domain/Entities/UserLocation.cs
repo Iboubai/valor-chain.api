@@ -24,13 +24,10 @@ namespace valor_chain.api.Domain.Entities
         {            
         }
 
-        public UserLocation(int id, Guid userId, Region region, Prefecture prefecture, SousPrefecture sousPrefecture, DateTime createdDate, bool isActive)
+        public UserLocation(int id, Guid userId, DateTime createdDate, bool isActive)
         {
             Id = id;
             UserId = userId;
-            Region = region;
-            Prefecture = prefecture;
-            SousPrefecture = sousPrefecture;
             CreatedDate = createdDate;
             IsActive = isActive;
         }
