@@ -120,7 +120,6 @@ namespace valor_chain.api.Controllers
             // Un utilisateur ne devrait pouvoir modifier que son propre profil.
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (currentUserId == null || Guid.Parse(currentUserId) != id)
             {
                 // L'utilisateur essaie de modifier un profil qui n'est pas le sien.
@@ -138,24 +137,13 @@ namespace valor_chain.api.Controllers
             {
                 _logger.LogInformation("Received update request for user {UserId}", id);
 
-                // 3. Appel au Command Handler pour exécuter la logique métier
-                // Il est de la responsabilité du handler de trouver l'utilisateur,
-                // d'appliquer les modifications et de sauvegarder en base de données.
                 var updatedUserResult = await _userCommandHandler.UpdateUserHandle(id, command, CancellationToken.None);
 
-                // 4. Gestion de la réponse du handler
                 if (updatedUserResult == null)
                 {
-                    // Le handler n'a pas trouvé l'utilisateur en base de données.
-                    return NotFound(new { message = "User not found" }); // Renvoie un statut 404
+                    return NotFound(new { message = "User not found" });
                 }
 
-                // Si tout s'est bien passé, le handler a déjà sauvegardé les modifications.
-                // On peut renvoyer une réponse 200 OK avec l'utilisateur mis à jour,
-                // ou simplement une réponse 204 No Content pour indiquer le succès.
-
-                // Option A : Renvoyer l'objet mis à jour (pratique pour le frontend)
-                //return WrappeResponse(updatedUserResult); // Renvoie 200 OK
                 return WrappeResponse(updatedUserResult);
 
                 // Option B : Renvoyer "No Content" (plus léger)

@@ -4,7 +4,10 @@ namespace valor_chain.api.Domain.Ports.Output;
 
 public interface IParcelleRepository
 {
-    Task CreateUserParcelleAsync(Parcelle parcelle);
+    Task<Parcelle> CreateUserParcelleAsync(Parcelle parcelle);
+    void DeleteUserParcelleAsync(int id);
+    Task<IEnumerable<ParcelleStatus>> GetAllParcelleStatus();
     Task<IEnumerable<ParcelleType>> GetAllParcelleTypes();
     Task<IEnumerable<Parcelle>> GetUserParcellesAsync(Guid userId);
+    Task<Parcelle> UpdateUserParcelleAsync(Parcelle parcelle);
 }
