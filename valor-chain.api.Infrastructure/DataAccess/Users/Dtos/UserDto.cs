@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Models;
 
-namespace valor_chain.api.Infrastructure.DataAccess.Dtos
+namespace valor_chain.api.Infrastructure.DataAccess.Users.Dtos
 {
     [Table("Users")]
     public class UserDto : BaseEntity

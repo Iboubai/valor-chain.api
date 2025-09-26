@@ -1,11 +1,11 @@
 ﻿using GnDapper.Interfaces;
-using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Domain.Ports.Output.Mapper;
-using valor_chain.api.Infrastructure.DataAccess.Dtos;
-using valor_chain.api.Infrastructure.DataAccess.Mappers;
+using valor_chain.api.Infrastructure.DataAccess.Users.Dtos;
+using valor_chain.api.Domain.Entities;
+using valor_chain.api.Infrastructure.DataAccess.Users.Mappers;
 
-namespace valor_chain.api.Infrastructure.DataAccess;
+namespace valor_chain.api.Infrastructure.DataAccess.Users;
 
 public class UserRepository : IUserRepository
 {
@@ -15,19 +15,19 @@ public class UserRepository : IUserRepository
     public UserRepository(IUnitOfWork unitOfWork)
     {
         _userRepository = unitOfWork.Repository<UserDto>();
-        _userMapper = new UserMapper();
+        _userMapper = new UserMapper();        
     }
 
     public async Task<User> GetByIdAsync(Guid id)
     {
         var userDto = await _userRepository.GetByIdAsync(id);
-        return userDto == null ? null : _userMapper.ToEntity((UserDto)userDto);
+        return userDto == null ? null : _userMapper.ToEntity(userDto);
     }
 
     public async Task<User> AuthenticateUserAsync(string email, string password)
     {
         var userDto = await _userRepository.GetWithQuery($"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}' AND PasswordHash = '{password}' AND IsActive = 1");
-        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
+        return !userDto.Any() ? null : _userMapper.ToEntity(userDto.First());
     }
 
     public async Task<User> GetByEmailAsync(string email)
@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         var query =
             $"SELECT * from  {_userRepository.GetTableName()} WHERE Email = '{email}'";
         var userDto = await _userRepository.GetWithQuery(query);
-        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
+        return !userDto.Any() ? null : _userMapper.ToEntity(userDto.First());
     }
 
     public async Task AddAsync(User user)
@@ -58,7 +58,7 @@ public class UserRepository : IUserRepository
         var query =
             $"UPDATE {_userRepository.GetTableName()} SET PasswordHash = '{password}' WHERE Id = '{id}' AND Email = '{email}' ; SELECT * from  {_userRepository.GetTableName()} WHERE Id = '{id}' AND Email = '{email}'";
         var userDto = await _userRepository.GetWithQuery(query);
-        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
+        return !userDto.Any() ? null : _userMapper.ToEntity(userDto.First());
     }
 
     public async Task DeleteAsync(Guid id)
@@ -77,6 +77,6 @@ public class UserRepository : IUserRepository
         var query =
             $"SELECT * from  {_userRepository.GetTableName()} WHERE PhoneNumber = '{phoneNumber}'";
         var userDto = await _userRepository.GetWithQuery(query);
-        return !userDto.Any() ? null : _userMapper.ToEntity((UserDto)userDto.First());
+        return !userDto.Any() ? null : _userMapper.ToEntity(userDto.First());
     }
 }

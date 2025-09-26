@@ -1,8 +1,8 @@
 ﻿using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output.Mapper;
-using valor_chain.api.Infrastructure.DataAccess.Dtos;
+using valor_chain.api.Infrastructure.DataAccess.Users.Dtos;
 
-namespace valor_chain.api.Infrastructure.DataAccess.Mappers
+namespace valor_chain.api.Infrastructure.DataAccess.Users.Mappers
 {
     public class UserLocationMapper : IMapper<UserLocation, UserLocationDto>
     {
