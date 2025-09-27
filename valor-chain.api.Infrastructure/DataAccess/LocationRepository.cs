@@ -3,8 +3,8 @@ using GnDapper.Interfaces;
 using valor_chain.api.Domain.Entities;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Domain.Ports.Output.Mapper;
-using valor_chain.api.Infrastructure.DataAccess.Dtos;
-using valor_chain.api.Infrastructure.DataAccess.Mappers;
+using valor_chain.api.Infrastructure.DataAccess.Users.Dtos;
+using valor_chain.api.Infrastructure.DataAccess.Users.Mappers;
 
 namespace valor_chain.api.Infrastructure.DataAccess;
 

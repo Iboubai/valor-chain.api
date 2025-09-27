@@ -15,6 +15,8 @@ using valor_chain.api.Domain.Impl;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Infrastructure.DataAccess;
+using valor_chain.api.Infrastructure.DataAccess.Exploitation;
+using valor_chain.api.Infrastructure.DataAccess.Users;
 using valor_chain.api.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -94,6 +96,7 @@ builder.Services.AddScoped<IProfilRepository, UserProfilRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IParcelleRepository, ParcelleRepository>();
+builder.Services.AddScoped<ICheptelRepository, CheptelRepository>();
 
 // Register Services
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
