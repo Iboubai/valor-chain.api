@@ -97,6 +97,7 @@ builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IParcelleRepository, ParcelleRepository>();
 builder.Services.AddScoped<ICheptelRepository, CheptelRepository>();
+builder.Services.AddScoped<IBassinRepository, BassinRepository>();
 
 // Register Services
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
