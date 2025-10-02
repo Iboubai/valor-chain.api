@@ -14,6 +14,7 @@ using valor_chain.api.Application.Handlers;
 using valor_chain.api.Domain.Impl;
 using valor_chain.api.Domain.Ports.Input;
 using valor_chain.api.Domain.Ports.Output;
+using valor_chain.api.Domain.Ports.Output.Exploitation;
 using valor_chain.api.Infrastructure.DataAccess;
 using valor_chain.api.Infrastructure.DataAccess.Exploitation;
 using valor_chain.api.Infrastructure.DataAccess.Users;
@@ -98,6 +99,7 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IParcelleRepository, ParcelleRepository>();
 builder.Services.AddScoped<ICheptelRepository, CheptelRepository>();
 builder.Services.AddScoped<IBassinRepository, BassinRepository>();
+builder.Services.AddScoped<ISpeculationRepository, SpeculationRepository>();
 
 // Register Services
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
