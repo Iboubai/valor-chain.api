@@ -20,7 +20,7 @@ public class UserProfilRepository : IProfilRepository
 
     public async Task AddAsync(UserProfil profil)
     {
-        var d = await _profilRepository.AddAsync(profil);
+        await _profilRepository.AddAsync(profil);
     }
 
     public async Task<bool> IsUserProfilExist(Guid userId, string profilName)

@@ -12,7 +12,9 @@ using System.Text.Json.Serialization;
 using valor_chain.api;
 using valor_chain.api.Application.Handlers;
 using valor_chain.api.Domain.Impl;
+using valor_chain.api.Domain.Impl.Exploitation;
 using valor_chain.api.Domain.Ports.Input;
+using valor_chain.api.Domain.Ports.Input.Exploitation;
 using valor_chain.api.Domain.Ports.Output;
 using valor_chain.api.Domain.Ports.Output.Exploitation;
 using valor_chain.api.Infrastructure.DataAccess;
@@ -92,20 +94,35 @@ builder.Services.AddTransient<IDbConnection>(sp => new SqlConnection(connectionS
 // Register domain repositories
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IProfilRepository, UserProfilRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
 builder.Services.AddScoped<IParcelleRepository, ParcelleRepository>();
-builder.Services.AddScoped<ICheptelRepository, CheptelRepository>();
-builder.Services.AddScoped<IBassinRepository, BassinRepository>();
 builder.Services.AddScoped<ISpeculationRepository, SpeculationRepository>();
+builder.Services.AddScoped<IParcelleTypeRepository, ParcelleTypeRepository>();
+builder.Services.AddScoped<IParcelleStatusRepository, ParcelleStatusRepository>();
+builder.Services.AddScoped<IParcelleSpeculationRepository, ParcelleSpeculationRepository>();
+builder.Services.AddScoped<IParcelleTaskRepository, ParcelleTaskRepository>();
+builder.Services.AddScoped<IParcelleBudgetRepository, ParcelleBudgetRepository>();
+
+builder.Services.AddScoped<ICheptelRepository, CheptelRepository>();
+
+builder.Services.AddScoped<IBassinRepository, BassinRepository>();
 
 // Register Services
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<ILocationManagementService, LocationManagementService>();
+
 builder.Services.AddScoped<ICompanyManagementService, CompanyManagementService>();
-builder.Services.AddScoped<IExploitationService, ExploitationService>();
+
+builder.Services.AddScoped<IExploitationManagement, ExploitationManagement>();
+builder.Services.AddScoped<IParcelleService, ParcelleService>();
+builder.Services.AddScoped<ICheptelService, CheptelService>();
+builder.Services.AddScoped<IBassinService, BassinService>();
+
 builder.Services.AddScoped<IProjectManagementService, ProjectManagementService>();
 // Register external service clients
 builder.Services.AddScoped<IBusinessPlanGeneratorService, BusinessPlanGeneratorServiceAdapter>();
